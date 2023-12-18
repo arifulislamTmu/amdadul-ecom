@@ -30,6 +30,14 @@ class FrontendController extends Controller
 
     }
 
+  function Category($id){
+    $viewBag['products'] = null;
+    $viewBag['products'] = Product::where('product_status',1)->where('category_name',$id)->latest()->offset(0)->limit(16)->get();
+    return $viewBag;
+}
+
+
+
     // ajax product details page
     public function product_details(Request $request)
     {
@@ -80,6 +88,8 @@ public function search_all_product(Request $request)
 
   return view('pages.only_search_result', compact('products'));
 }
+
+
 
 
 }

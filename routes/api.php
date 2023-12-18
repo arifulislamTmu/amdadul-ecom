@@ -32,5 +32,6 @@ Route::controller(AuthController::class)->group(function(){
     Route::get('/logout','logout');
 });
 Route::get('/frontend/home', 'FrontendController@index');
+Route::get('/category/product/{id}', 'FrontendController@Category');
 /* Route::post('/login', [AuthController::class,"login"]);
 Route::get('/logout', [AuthController::class,"logout"]); */
