@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Frontend\AllproductController;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,5 +34,7 @@ Route::controller(AuthController::class)->group(function(){
 });
 Route::get('/frontend/home', 'FrontendController@index');
 Route::get('/category/product/{id}', 'FrontendController@Category');
+Route::get('product/details/{prod_id}', [AllproductController::class,'product_detail'])->name('product.details');
+
 /* Route::post('/login', [AuthController::class,"login"]);
 Route::get('/logout', [AuthController::class,"logout"]); */
