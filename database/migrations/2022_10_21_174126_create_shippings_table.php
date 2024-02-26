@@ -13,18 +13,18 @@ class CreateShippingsTable extends Migration
      */
     public function up()
     {
-      						
+
         Schema::create('shippings', function (Blueprint $table) {
             $table->id();
             $table->integer('order_id');
             $table->string('frist_name');
-            $table->string('last_name');
+            $table->string('last_name')->nullable();
             $table->string('phone');
             $table->string('email');
-            $table->string('country');
-            $table->string('division');
-            $table->string('district');
-            $table->string('thana');
+            $table->string('country')->nullable();
+            $table->string('division')->nullable();
+            $table->string('district')->nullable();
+            $table->string('thana')->nullable();
             $table->text('address_holdding');
             $table->timestamps();
         });

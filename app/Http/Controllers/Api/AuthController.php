@@ -48,6 +48,7 @@ class AuthController extends Controller
                 'user' => [
                     'name' => $user->name,
                     'email' => $user->email,
+                    'id' => $user->id,
                 ],
             ], 200);
         } catch (\Throwable $th) {
@@ -57,10 +58,61 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+public function register(Request $request)
+{
+    try {
+        $validateUser = Validator::make($request->all(), [
+            'name' => 'required',
+            'phone' => 'required|numeric',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+            'confirm_password' => 'required|same:password',
+        ]);
+
+        if ($validateUser->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateUser->errors(),
+            ], 422);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        Auth::login($user); // Log in the user immediately after registration
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User successfully registered and logged in',
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'id' => $user->id,
+            ],
+            'token' => $user->createToken("API_TOKEN")->plainTextToken,
+        ], 201);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
+    }
+}
+
+
+
+
     function logout()
     {
         function logout()
         {
+            dd(Auth::check());
             if (Auth::check()) {
                 Auth::user()->token()->where('id', Auth::id())->delete();
             }

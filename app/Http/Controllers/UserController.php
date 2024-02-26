@@ -8,16 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function __construct() {
+ /*   public function __construct() {
         $this->middleware('auth:admin');
-    }
-    
+    } */
+
     public function user_list()
     {
       $users = User::latest()->get();
       return view('admin.user-list.index', compact('users'));
     }
-    
+
+    public function userInfo($id)
+    {
+      $userInfo = User::find($id);
+      return response()->json($userInfo);
+    }
 
 }
 

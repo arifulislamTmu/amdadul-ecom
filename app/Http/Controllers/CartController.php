@@ -14,30 +14,85 @@ session_start();
 
 class CartController extends Controller
 {
-   // ei toko bad jabe 
+    public function cartAdd(Request $request, $id)
+    {
+        $sessionUser = $request->query('sessionUser');
+        $qty = $request->query('qty', 1);
+        if( $sessionUser==1){
+         $userSessionId = session_id();
+        }else{
+            $userSessionId = $sessionUser;
+        }
+        $product = Product::where('id', $id)->select('product_price')->first();
+        $cartItem = Cart::where('product_id', $id)->where('user_ip', $userSessionId)->first();
 
-   public function cartadd($id)
-   {
-      $product =  Product::where('id', $id)->get();
-      foreach ($product as $row) {
-         $prod_price = $row->product_price;
-      }
-      $chech = Cart::where('product_id', $id)->where('user_ip',  session_id())->first();
-      if ($chech) {
-         Cart::where('product_id', $id)->increment('qty');
-         return redirect()->back()->with('success', 'Product already In cart and Update');
-      } else {
-         Cart::insert([
-            'product_id' => $id,
-            'price' => $prod_price,
-            'qty' => 1,
-            'user_ip' =>  session_id()
-         ]);
-         return redirect()->back()->with('success', 'Product  In cart');
-      }
-   }
-   // ei toko bad jabe 
+        if ($cartItem) {
+            $cartItem->increment('qty', $qty);
+            $cartItem = Cart::join('products', 'carts.product_id', '=', 'products.id')
+            ->select('carts.*',
+                    'products.product_img_one',
+                    'products.product_name')
+            ->where('carts.user_ip', $userSessionId)
+            ->get();
+            $totalPrice = 0;
+            $CountItems = 0;
+            foreach ($cartItem as $cart) {
+            $totalPrice += $cart->price * $cart->qty;
+            $CountItems++;
+            }
+            return response()->json([
+                'msg' => 'Product already in cart and updated',
+                'cartItem' => $cartItem,
+                'totalPrice' => $totalPrice,
+                'CountItems' => $CountItems,
+                'userSessionId' => $userSessionId,
+            ]);
+        } else {
+          Cart::create([
+                'product_id' => $id,
+                'price' => $product->product_price,
+                'qty' => $qty,
+                'user_ip' => $userSessionId,
+            ]);
+           $cartItem = Cart::join('products', 'carts.product_id', '=', 'products.id')
+           ->select('carts.*',
+           'products.product_img_one',
+           'products.product_name')
+            ->where('carts.user_ip', $userSessionId)
+            ->get();
 
+           $totalPrice = 0;
+            $CountItems = 0;
+            foreach ($cartItem as $cart) {
+            $totalPrice += $cart->price * $cart->qty;
+            $CountItems++;
+            }
+            return response()->json([
+                'msg' => 'Product added to cart',
+                'cartItem' => $cartItem,
+                'totalPrice' => $totalPrice,
+                'CountItems' => $CountItems,
+                'userSessionId' => $userSessionId,
+            ]);
+        }
+    }
+
+    function getCartValue($id) {
+      $cartItem = Cart::with('cart')->where('user_ip', $id)->get();
+      $totalPrice = 0;
+      $CountItems = 0;
+      foreach ($cartItem as $cartItem) {
+          $totalPrice += $cartItem->price * $cartItem->qty;
+          $CountItems++;
+      }
+        return response()->json([
+            'msg' => 'Show cart product',
+            'cartItem' => $cartItem,
+            'totalPrice' => $totalPrice,
+            'CountItems' => $CountItems,
+            'userSessionId' => $id,
+        ]);
+    }
 
    public function cart_page()
    {
@@ -65,7 +120,7 @@ class CartController extends Controller
 
 
 
-   //ajux add to cart 
+   //ajux add to cart
    public function add_to_cart(Request $request, $product_id)
    {
       $request->validate([
@@ -151,9 +206,31 @@ class CartController extends Controller
 
 
    // remove cart itmem
-   public function cart_product_remove(Request $request)
+   public function cart_product_remove(Request $request,$id)
    {
-      Cart::find($request->cart_id)->delete();
+      Cart::find($id)->delete();
+      $sessionUser = $request->query('sessionUser');
+      $cartItem = Cart::join('products', 'carts.product_id', '=', 'products.id')
+      ->select('carts.*',
+      'products.product_img_one',
+      'products.product_name')
+       ->where('carts.user_ip', $sessionUser)
+       ->get();
+
+      $totalPrice = 0;
+       $CountItems = 0;
+       foreach ($cartItem as $cart) {
+       $totalPrice += $cart->price * $cart->qty;
+       $CountItems++;
+       }
+       return response()->json([
+           'msg' => 'Successfully done',
+           'cartItem' => $cartItem,
+           'totalPrice' => $totalPrice,
+           'CountItems' => $CountItems,
+           'userSessionId' => $sessionUser,
+       ]);
+
       return redirect()->back()->with('success_delete', 'Cart item remove');
    }
 
@@ -164,29 +241,63 @@ class CartController extends Controller
          return  $t->price * $t->qty;
       });
       $carts = Cart::where('user_ip',  session_id())->get();
-   
+
       return view('pages.cart-list', compact('carts', 'sub_total'));
    }
 
-   //cart product update 
-   public function cart_product_update(Request $request)
+   //cart product update
+   public function cart_product_update(Request $request, $id)
    {
-      Cart::where('id', $request->cart_id)->increment('qty');
-       if (Session::has('copon')) {
-         session()->forget('copon');
-      }
-      return redirect()->back()->with('success', 'Cart Quantity Updated');
-     
+      $sessionUser = $request->query('sessionUser');
+      Cart::where('id', $id)->increment('qty');
+
+      $cartItem = Cart::join('products', 'carts.product_id', '=', 'products.id')
+      ->select('carts.*',
+      'products.product_img_one',
+      'products.product_name')
+       ->where('carts.user_ip', $sessionUser)
+       ->get();
+
+      $totalPrice = 0;
+       $CountItems = 0;
+       foreach ($cartItem as $cart) {
+       $totalPrice += $cart->price * $cart->qty;
+       $CountItems++;
+       }
+       return response()->json([
+           'msg' => 'Successfully done',
+           'cartItem' => $cartItem,
+           'totalPrice' => $totalPrice,
+           'CountItems' => $CountItems,
+           'userSessionId' => $sessionUser,
+       ]);
    }
-   //cart product decriment 
-   public function cart_product_decrement(Request $request)
+   //cart product decriment
+   public function cart_product_decrement(Request $request , $id)
    {
-      Cart::where('id', $request->cart_id)->decrement('qty');
-      if (Session::has('copon')) {
-         session()->forget('copon');
-      }
-      return redirect()->back()->with('success', 'Cart Quantity Decriment');
-      
+    $sessionUser = $request->query('sessionUser');
+    Cart::where('id', $id)->decrement('qty');
+
+    $cartItem = Cart::join('products', 'carts.product_id', '=', 'products.id')
+    ->select('carts.*',
+    'products.product_img_one',
+    'products.product_name')
+     ->where('carts.user_ip', $sessionUser)
+     ->get();
+
+    $totalPrice = 0;
+     $CountItems = 0;
+     foreach ($cartItem as $cart) {
+     $totalPrice += $cart->price * $cart->qty;
+     $CountItems++;
+     }
+     return response()->json([
+         'msg' => 'Successfully done',
+         'cartItem' => $cartItem,
+         'totalPrice' => $totalPrice,
+         'CountItems' => $CountItems,
+         'userSessionId' => $sessionUser,
+     ]);
 
    }
 
@@ -211,7 +322,7 @@ class CartController extends Controller
    }
 
 
-   // Coupun remove 
+   // Coupun remove
    public function couponremove()
    {
       if (Session::has('copon')) {
@@ -232,6 +343,6 @@ class CartController extends Controller
         ->get();
         return view('pages.check-out-buy-page',compact('sub_total', 'cart_join_prod'));
    }
-   
+
 
 }

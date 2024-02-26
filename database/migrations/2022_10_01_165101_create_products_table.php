@@ -33,6 +33,8 @@ class CreateProductsTable extends Migration
             $table->string('product_img_six')->nullable();
             $table->string('product_status')->default('1');
             $table->string('product_slug');
+            $table->string('product_type');
+
             $table->timestamps();
         });
     }

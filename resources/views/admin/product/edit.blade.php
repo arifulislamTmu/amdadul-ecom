@@ -8,24 +8,39 @@
             <a class="breadcrumb-item" href="{{ url('/admin/home') }}">Home</a>
             <span class="breadcrumb-item active">Product Edit Page</span>
         </nav>
-    
+
         <div class="sl-pagebody">
             @foreach ( $product_edit as $product)
             @php
-           $product_sizes = json_decode($product->product_size);
-           $product_colors = json_decode($product->product_color);
+                    $product_sizes = json_decode($product->product_size);
+                    $product_colors = json_decode($product->product_color);
             @endphp
             <form action="{{ route('update.product',$product->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
                     <div class="card pd-20 pd-sm-40">
                         <div class="d-flex justify-content-between align-items-center">
-                            Update Product
+                          <h5>  Update Product</h5>
                             <a href="{{ route('product.list') }}" class="btn btn-success btn-sm mb-2"> Product List</a>
                         </div>
                         <p class="border"></p>
                         <div class="form-layout">
                             <div class="row mg-b-25">
+                                <div class="col-lg-4">
+                                  {{--   @dd($product->product_type); --}}
+                                    <div class="form-group mg-b-10-force">
+                                        <label class="form-control-label"> Product Type: <span
+                                                class="tx-danger">*</span></label>
+                                                <select class="form-control select2" name="product_type" data-placeholder="Select Brand Name">
+                                                    <option @if($product->product_type == "CCTV") selected @endif value="CCTV">CCTV Product</option>
+                                                    <option @if($product->product_type == "Electronics") selected @endif value="Electronics">Electronics Product</option>
+                                                    <option @if($product->product_type == "Industial") selected @endif value="Industial">Industrial Product</option>
+                                                </select>
+                                        @error('product_type')
+                                            <strong class="text-danger">{{ $message }}</strong>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label class="form-control-label">Product Name: <span
@@ -38,7 +53,7 @@
 
                                     </div>
                                 </div><!-- col-4 -->
-                                <div class="col-lg-4">
+                                <div class="col-lg-2">
                                     <div class="form-group">
                                         <label class="form-control-label">Product Code: <span
                                                 class="tx-danger">*</span></label>
@@ -49,7 +64,7 @@
                                         @enderror
                                     </div>
                                 </div><!-- col-4 -->
-                                <div class="col-lg-4">
+                                <div class="col-lg-2">
                                     <div class="form-group">
                                         <label class="form-control-label">Product Price: <span
                                                 class="tx-danger">*</span></label>
@@ -72,8 +87,8 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    
-                                    
+
+
                                     <div class="form-group mg-b-10-force">
                                         <label class="form-control-label"> Brand Name: <span
                                                 class="tx-danger">*</span></label>
@@ -82,7 +97,7 @@
                                             <option label="Select Brand Name"></option>
                                             @foreach ($brands as $brand)
                                                 <option value="{{ $brand->id }}" {{ $product->brand_name == $brand->id ? "selected":"" }}> {{ $brand->brand_name }}</option>
-                                               
+
                                             @endforeach
                                         </select>
                                         @error('brand_name')
@@ -110,7 +125,7 @@
                                 <style>
                                     .checkbox_valye{
                                        display: flex;
-                                      
+
                                     }
                                     .input_chack .inpou{
                                         width: 20px;
@@ -118,7 +133,7 @@
                                         margin-right:5px;
                                         margin-left: 20px;
                                     }
-                                    
+
                                 </style>
                                 <div class="col-lg-6">
                                     <label class="">Product Size: <span class="tx-danger">*</span></label>
@@ -143,7 +158,7 @@
                                            <h6> Large(L)</h6>
                                         </div>
                                     </div>
-                                                                                            
+
                                     <div class="checkbox_valye mt-3">
                                         <div class="input_chack">
                                             <input class="inpou" type="checkbox" name="product_size[]" value="XS" {{ in_array("XS",$product_sizes)?'checked':"" }}>
@@ -169,7 +184,7 @@
                                     <strong class="text-danger">{{ $message }}</strong>
                                 @enderror
                                 </div>
-                            
+
                                 <div class="col-lg-6 mb-2">
                                     <label class="">Product Color: <span class="tx-danger">*</span></label>
                                     <div class="row">
@@ -215,7 +230,7 @@
                                                     <div class="name_value">
                                                     <h6> Pink</h6>
                                                     </div>
-                                            </div>  
+                                            </div>
                                             <div class="checkbox_valye">
                                                 <div class="input_chack">
                                                     <input class="inpou" type="checkbox" name="product_color[]" value="Goldenrod"  {{ in_array("Goldenrod",$product_colors)?'checked':"" }}>
@@ -229,7 +244,7 @@
                                                 <div class="name_value">
                                                     <h6>Green</h6>
                                                  </div>
-                                            </div>        
+                                            </div>
                                         </div>
                                         <div class="col-6">
                                          <div class="checkbox_valye ">
@@ -264,7 +279,7 @@
                                                    <h6> Black</h6>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="checkbox_valye ">
                                                 <div class="input_chack">
                                                     <input class="inpou" type="checkbox" name="product_color[]" value="Olive"  {{ in_array("Olive",$product_colors)?'checked':"" }}>
@@ -279,7 +294,7 @@
                                                    <h6> Sky blue   </h6>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="checkbox_valye ">
                                                 <div class="input_chack">
                                                     <input class="inpou" type="checkbox" name="product_color[]" value="Spring Green"  {{ in_array("Spring Green",$product_colors)?'checked':"" }}>
@@ -294,10 +309,10 @@
                                                     <h6>Teal  </h6>
                                                  </div>
                                             </div>
-                                           
+
                                         </div>
                                     </div>
-                                  
+
                                     @error('product_color')
                                     <strong class="text-danger">{{ $message }}</strong>
                                 @enderror
@@ -342,7 +357,7 @@
                         <input type="hidden" name="image_five" value="{{ $product->product_img_five }}">
                         <input type="hidden" name="image_six" value="{{ $product->product_img_six }}">
                      <div class="row mt-2">
-                        
+
                         <div class="col-lg-4">
                             <div class="row">
                                 <div class="col-6">
@@ -366,7 +381,7 @@
                         <div class="col-lg-4">
                             <div class="row">
                                 <div class="col-6">
-                            
+
                                     <div class="form-group mg-b-10-force">
                                         <label class="form-control-label">Product Image 2: <span
                                                 class="tx-danger">*</span></label>
@@ -403,7 +418,7 @@
                                     </div>
                                 </div>
                             </div>
-                     
+
                         </div>
 
                         <div class="col-lg-4">
@@ -425,7 +440,7 @@
                                     </div>
                                 </div>
                             </div>
-                     
+
                         </div>
 
                         <div class="col-lg-4">
@@ -447,7 +462,7 @@
                                     </div>
                                 </div>
                             </div>
-                     
+
                         </div>
                         <div class="col-lg-4">
                             <div class="row">
@@ -468,7 +483,7 @@
                                     </div>
                                 </div>
                             </div>
-                     
+
                         </div>
                         <div class="">
                             <button class="btn btn-info mg-l-5">Update Image</button>
