@@ -73,13 +73,24 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-2">
                                     <div class="form-group mg-b-10-force">
                                         <label class="form-control-label">Product Quantity: <span
                                                 class="tx-danger">*</span></label>
                                         <input class="form-control" type="number" name="product_quantity"
                                             value="{{ old('product_quantity') }}" placeholder="Enter quantity">
                                         @error('product_quantity')
+                                            <strong class="text-danger">{{ $message }}</strong>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group mg-b-10-force">
+                                        <label class="form-control-label">Order Qty: <span
+                                                class="tx-danger">*</span></label>
+                                        <input class="form-control" value="1" min="1" type="number" name="product_order_qty"
+                                            value="{{ old('product_order_qty') }}" placeholder="Order quantity">
+                                        @error('product_order_qty')
                                             <strong class="text-danger">{{ $message }}</strong>
                                         @enderror
                                     </div>
@@ -131,7 +142,7 @@
 
                                 </style>
                                 <div class="col-lg-4">
-                                    <label class="">Product Size: <span class="tx-danger">*</span></label>
+                                    <label class="">Product Size:</label>
                                     <div class="checkbox_valye">
                                         <div class="input_chack">
                                             <input class="inpou" type="checkbox" name="product_size[]" value="S">
@@ -181,7 +192,7 @@
                                 </div>
 
                                 <div class="col-lg-8 mb-2">
-                                    <label class="">Product Color: <span class="tx-danger">*</span></label>
+                                    <label class="">Product Color:</label>
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="row">

@@ -21,8 +21,9 @@ class CreateProductsTable extends Migration
             $table->integer('product_quantity');
             $table->integer('brand_name');
             $table->integer('category_name');
-            $table->string('product_size');
-            $table->string('product_color');
+            $table->string('product_size')->nullable();
+            $table->string('product_color')->nullable();
+            $table->integer('product_order_qty')->nullable();
             $table->text('sort_description');
             $table->text('long_description');
             $table->string('product_img_one')->nullable();
@@ -34,6 +35,10 @@ class CreateProductsTable extends Migration
             $table->string('product_status')->default('1');
             $table->string('product_slug');
             $table->string('product_type');
+
+            $table->integer('product_price_old')->nullable();
+            $table->integer('discout')->nullable();
+            $table->string('deal_type')->nullable();
 
             $table->timestamps();
         });

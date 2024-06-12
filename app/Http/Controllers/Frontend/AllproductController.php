@@ -73,6 +73,14 @@ class AllproductController extends Controller
         return $data;
     }
 
+    public function deals_product()
+    {
+        $data = [''];
+        $deal_type = "today_deals";
+        $data['products'] = Product::where('product_status', 1)->where('deal_type', $deal_type)->orderBy('id', 'desc')->paginate(16);
+        return $data;
+    }
+
     public function price_product_search(Request $request)
     {
         $products = Product::whereBetween('product_price', [$request->max_range, $request->min_range])

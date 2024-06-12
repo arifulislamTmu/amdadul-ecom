@@ -19,7 +19,7 @@ class FrontendController extends Controller
         // only for ajax
         $products_se = Product::where('id',0)->latest()->get();
        // only for ajax end
-        $viewBag['products'] = Product::where('product_status',1)->latest()->offset(0)->limit(16)->get();
+        $viewBag['products'] = Product::where('product_status',1)->latest()->offset(0)->limit(18)->get();
         $viewBag['sliders'] = SliderModel::where('product_status',1)->latest()->offset(0)->limit(8)->get();
         $viewBag['side_sliders'] = SliderModel::where('product_status',1)->latest()->offset(0)->limit(2)->get();
         $viewBag['categoris'] = Category::where('status', 1)->latest()->offset(0)->limit(8)->get();

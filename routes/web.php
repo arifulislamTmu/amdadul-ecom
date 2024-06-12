@@ -65,6 +65,7 @@ Route::get('status-active/{a_id}',[BrandController::class, 'statasactive']);
 Route::get('product-page/', [ProductController::class,'index'])->name('addproduct');
 Route::post('/product-add', [ProductController::class,'productAdded'])->name('add.product');
 Route::get('product-list/', [ProductController::class,'productList'])->name('product.list');
+Route::post('/price-discount-add', [ProductController::class,'priceDiscountAdd'])->name('price.discount.add');
 Route::get('prod-status-dactive/{prod_id}', [ProductController::class,'deactive_prod']);
 Route::get('prod-status-active/{prod_id}', [ProductController::class,'active_prod']);
 Route::get('product-edit/{id}',[ProductController::class,'productedit']);

@@ -19,28 +19,36 @@ class AuthController extends Controller
             $validateUser = Validator::make(
                 $request->all(),
                 [
-                    'email' => 'required|email',
+                    'email' => 'required', 
                     'password' => 'required'
                 ]
             );
-
+    
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Email and password required',
+                    'message' => 'Email or phone number and password required',
                     'errors' => $validateUser->errors()
                 ], 401);
             }
-
-            if (!Auth::attempt($request->only(['email', 'password']))) {
+            $identifier = $request->input('email');
+            $credentials = ['password' => $request->input('password')];
+    
+            if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+                $credentials['email'] = $identifier;
+            } else {
+                $credentials['phone'] = $identifier;
+            }
+    
+            if (!Auth::attempt($credentials)) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Email or password does not match with our record.',
+                    'message' => 'Email or phone number or password does not match our records.',
                 ], 401);
             }
-
-            $user = User::where('email', $request->email)->first();
-
+    
+            $user = User::where('email', $identifier)->orWhere('phone', $identifier)->first();
+    
             return response()->json([
                 'status' => true,
                 'message' => 'User Successfully Logged In',
@@ -48,6 +56,7 @@ class AuthController extends Controller
                 'user' => [
                     'name' => $user->name,
                     'email' => $user->email,
+                    'phone' => $user->phone,
                     'id' => $user->id,
                 ],
             ], 200);

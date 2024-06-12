@@ -44,6 +44,8 @@ Route::get('product/details/{prod_id}', [AllproductController::class, 'product_d
 Route::get('/frontend/product-type/{type}', [AllproductController::class,'product_show']);
 Route::get('/product/category/search/{id}',[AllproductController::class,'category_product_search']);
 Route::get('/product/brand/search/{id}',[AllproductController::class,'brand_product_search']);
+// all product-deals type product
+Route::get('/frontend/deals',[AllproductController::class,'deals_product']);
 //add to cart
 Route::get('/add-to-cart/{cart_id}', [CartController::class, 'cartAdd']);
 Route::get('/cart/value/{id}', [CartController::class, 'getCartValue']);
@@ -60,9 +62,16 @@ Route::get('/frontend-all-orders/{id}',[OrderController::class,'allOrders']);
 Route::get('/frontend-order-details/{id}',[OrderController::class,'my_order_details']);
 
 
+
+
 Route::get('/get-division',[DivisionController::class,'division']);
 Route::get('/get-districts/{id}',[DivisionController::class,'districts']);
 Route::get('/get-upazila/{id}',[DivisionController::class,'upazila']);
 
 //user info
 Route::get('/get-user-info/{id}',[UserController::class,'userInfo']);
+Route::get('/email-check/{email}',[UserController::class,'userEmailCheck']);
+Route::get('/phone-check/{phone}',[UserController::class,'userPhoneCheck']);
+Route::post('/update-profile',[UserController::class,'update_profile']);
+//otp info
+Route::get('/send-otp',[UserController::class,'genarateOtp']);

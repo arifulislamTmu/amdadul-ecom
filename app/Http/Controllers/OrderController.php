@@ -102,7 +102,7 @@ class OrderController extends Controller
   public function allOrders($id)
   {
     $data = [];
-     $data['orders'] = Order::where('user_id', $id)->latest()->paginate(15);
+     $data['orders'] = Order::where('user_id', $id)->latest()->paginate(10);
 
     return $data;
   }
